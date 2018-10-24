@@ -39,7 +39,32 @@ class GraphQL(BaseAPI):
 
     @classmethod
     def get_transaction(cls, tx_address: str) -> dict:
-        return clove_req_json(f'{cls.api_url}/tx/{tx_address}')
+        query = '''
+        {
+          txByTxId(txId: "%s") {
+            txId
+            version
+            locktime
+            vinsByTxId {
+              nodes {
+                txId
+                vout
+                n
+                scriptSig
+                address
+                value
+              }
+            }
+            blockHash
+            blockByBlockHash {
+              hash
+              height
+            }
+          }
+        }
+        ''' % (tx_address)
+        json_response = clove_req_json(f'{cls.api_url}/graphql', post_data={'query': query})
+        return json_response
 
     @classmethod
     def get_utxo(cls, address, amount):

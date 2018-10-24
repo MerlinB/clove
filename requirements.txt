@@ -1,0 +1,6 @@
+python-altcoinlib==0.9.1
+colorama==0.3.9
+coloredlogs==9.0
+web3==4.0.0b11
+ecdsa==0.13
+requests==2.19.1
