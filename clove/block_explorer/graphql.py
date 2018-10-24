@@ -21,12 +21,18 @@ class GraphQL(BaseAPI):
     def get_latest_block(cls) -> Optional[int]:
         '''Returns the number of the latest block.'''
 
-        post_data = {
-            'query': 'query { allBlocks(orderBy: HEIGHT_DESC, first: 1) { nodes { height } } }',
+        query = '''
+        {
+            allBlocks(orderBy: HEIGHT_DESC, first: 1) {
+                nodes {
+                    height
+                }
+            }
         }
+        '''
 
         try:
-            json_response = clove_req_json(f'{cls.api_url}/graphql', post_data=post_data)
+            json_response = clove_req_json(f'{cls.api_url}/graphql', post_data={'query': query})
             latest_block = json_response['data']['allBlocks']['nodes'][0]['height']
         except (TypeError, KeyError):
             logger.error(f'Cannot get latest block, bad response ({cls.symbols[0]})')
@@ -68,6 +74,19 @@ class GraphQL(BaseAPI):
 
     @classmethod
     def get_utxo(cls, address, amount):
+
+        # for tx recieved by address:
+        # {
+        #  allVouts(condition: {txId: "%s", spendingN: null}) {
+        #    nodes {
+        #      txId
+        #      value
+        #      spendingN
+        #      spendingTxId
+        #    }
+        #  }
+        # }
+
         data = clove_req_json(f'{cls.api_url}/addrs/{address}/utxo')
         unspent = sorted(data, key=lambda k: k['satoshis'], reverse=True)
 
