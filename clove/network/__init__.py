@@ -53,6 +53,7 @@ from clove.network.bitcoin_based.vivo import Vivo
 from clove.network.bitcoin_based.zcoin import ZCoin, ZCoinTestNet
 from clove.network.bitcoin_based.zetacoin import Zetacoin, ZetacoinTestNet
 from clove.network.bitcoin_based.zoin import Zoin, ZoinTestNet
+from clove.network.bitcoin_based.drivechaintestdrive import DrivechainTestDrive
 from clove.network.ethereum import Ethereum, EthereumTestnet
 from clove.network.ethereum_based.ellaism import Ellaism, EllaismTestnet
 from clove.network.ethereum_based.ether_gem import EtherGem
@@ -116,6 +117,7 @@ BITCOIN_BASED = (
     ZCoin, ZCoinTestNet,
     Zetacoin, ZetacoinTestNet,
     Zoin, ZoinTestNet,
+    DrivechainTestDrive,
 )
 
 ETHEREUM_BASED = (

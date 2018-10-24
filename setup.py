@@ -23,7 +23,7 @@ setup(
         'coloredlogs==9.0',
         'web3==4.0.0b11',
         'ecdsa==0.13',
-        'requests==2.4.3',
+        'requests==2.19.1',
 
         # fixed requirements of ethereum
         'eth-account==0.1.0a2',

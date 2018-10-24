@@ -6,7 +6,7 @@ from clove.exceptions import ExternalApiRequestLimitExceeded
 from clove.utils.logging import logger
 
 
-def clove_req_json(url: str):
+def clove_req_json(url: str, post_data={}):
     """
     Make a request with Clove user-agent header and return json response
 
@@ -38,7 +38,11 @@ def clove_req_json(url: str):
 
     logger.debug('  Requesting: %s', url)
     request_start = time.time()
-    resp = requests.get(url, headers={'User-Agent': 'Clove'})
+
+    if post_data:
+        resp = requests.post(url, data=post_data)
+    else:
+        resp = requests.get(url, headers={'User-Agent': 'Clove'})
 
     response_time = time.time() - request_start
     logger.debug('Got response: %s [%.2fs]', url, response_time)
@@ -49,6 +53,7 @@ def clove_req_json(url: str):
 
     if resp.status_code != 200:
         logger.error(f'Unexpected status code when requesting url: {url}')
+        logger.debug(resp.content)
         return
 
     return resp.json()
