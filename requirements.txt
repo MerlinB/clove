@@ -4,3 +4,4 @@ coloredlogs==9.0
 web3==4.0.0b11
 ecdsa==0.13
 requests==2.19.1
+ipython
