@@ -74,31 +74,40 @@ class GraphQL(BaseAPI):
 
     @classmethod
     def get_utxo(cls, address, amount):
+        query = """
+        {
+            getAddressTxs(_address: "%s") {
+                nodes {
+                    voutsByTxId(condition: { spendingN: null }) {
+                        nodes {
+                            txId
+                            n
+                            value
+                            scriptPubKey
+                        }
+                    }
+                }
+            }
+        }
+        """ % (address)
 
-        # for tx recieved by address:
-        # {
-        #  allVouts(condition: {txId: "%s", spendingN: null}) {
-        #    nodes {
-        #      txId
-        #      value
-        #      spendingN
-        #      spendingTxId
-        #    }
-        #  }
-        # }
+        data = clove_req_json(f'{cls.api_url}/graphql', post_data={'query': query})
+        vouts = []
+        for node in data['data']['getAddressTxs']['nodes']:
+            for vout in node['voutsByTxId']['nodes']:
+                vouts.append(vout)
 
-        data = clove_req_json(f'{cls.api_url}/addrs/{address}/utxo')
-        unspent = sorted(data, key=lambda k: k['satoshis'], reverse=True)
+        unspent = sorted(vouts, key=lambda k: k['value'], reverse=True)
 
         utxo = []
         total = 0
 
         for output in unspent:
-            value = from_base_units(output['satoshis'])
+            value = float(output['value'])
             utxo.append(
                 Utxo(
-                    tx_id=output['txid'],
-                    vout=output['vout'],
+                    tx_id=output['txId'],
+                    vout=output['n'],
                     value=value,
                     tx_script=output['scriptPubKey'],
                 )
